@@ -53,7 +53,7 @@
 #define Hi(param) ((char *)&param)[1]
 
 void wm8731_init();
-void wm8731_write_register (uint8_t reg, uint16_t data);
+void wm8731_write_register(uint8_t reg, uint16_t data);
 
 #endif // wm8731_H
 

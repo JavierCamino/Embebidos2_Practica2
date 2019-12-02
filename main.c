@@ -138,6 +138,9 @@ static void audio_config (void * arg)
 	/* Initialize audio codec */
 	wm8731_init();
 
+	/* Delay to ensure communication ended before suspending task */
+	vTaskDelay(pdMS_TO_TICKS(100));
+
 	/* Self suspend */
 	vTaskSuspend(CodecConfig_task_handle);
 }
