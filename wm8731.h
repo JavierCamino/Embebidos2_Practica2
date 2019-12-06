@@ -44,7 +44,7 @@
 #define WM8731_ANALOG_AUDIO_LINE	0x0011 // Line In -> ADC
 #define WM8731_DIGITAL_AUDIO		0x0000
 #define WM8731_POWER_MODE			0x0000 // Disable Power down
-#define WM8731_DA_INTERFACE			0x0053 // Enable Master Mode and 32bit data
+#define WM8731_DA_INTERFACE			0x0043 // Enable Master Mode and 32bit data Right Channel DAC data when DACLRC low
 #define WM8731_SAMPLING				0x0000 // 48kHz, MCLK=12.288MHz
 #define WM8731_ACTIVATE				0x0001 // Module is ON
 #define WM8731_DEACTIVATE			0x0000 // Module is OFF

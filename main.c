@@ -10,6 +10,7 @@
 #include "audio.h"
 #include "rtos_i2c.h"
 #include "wm8731.h"
+#include "rtos_i2s.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -78,7 +79,8 @@ const UBaseType_t    CodecConfig_task_priority = configMAX_PRIORITIES - 1U;
 TaskHandle_t         CodecConfig_task_handle   = 0;
 
 
-
+/* Global variables */
+uint32_t echo_buffer;
 
 
 
@@ -139,9 +141,32 @@ static void audio_config (void * arg)
 	wm8731_init();
 
 	/* Delay to ensure communication ended before suspending task */
-	vTaskDelay(pdMS_TO_TICKS(100));
+	vTaskDelay( pdMS_TO_TICKS(100) );
+
+	/* Initialize I2S */
+	i2s_rx_init();
+	vTaskDelay( pdMS_TO_TICKS(100) );
+	i2s_tx_init();
+	vTaskDelay( pdMS_TO_TICKS(100) );
+
 
 	/* Self suspend */
 	vTaskSuspend(CodecConfig_task_handle);
 }
 
+
+
+
+
+void I2S0_Tx_IRQHandler(void)
+{
+	I2S0->TCSR |= I2S_TCSR_FRIE_MASK;
+	I2S0->TDR[0]= echo_buffer;
+	NVIC_ClearPendingIRQ(I2S0_Tx_IRQn);
+}
+void I2S0_Rx_IRQHandler(void)
+{
+	I2S0->RCSR |= I2S_RCSR_FRIE_MASK;
+	echo_buffer = I2S0->RDR[0];
+	NVIC_ClearPendingIRQ(I2S0_Rx_IRQn);
+}

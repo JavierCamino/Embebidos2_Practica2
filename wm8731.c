@@ -20,7 +20,7 @@ void wm8731_init()
 	/* Right headphone out settings */
 	wm8731_write_register(WM8731_REG_RHPHONE_OUT, WM8731_HP_RIGHT);
 	/* Analog paths */
-	wm8731_write_register(WM8731_REG_ANALOG_PATH, WM8731_ANALOG_AUDIO_BYPASS);
+	wm8731_write_register(WM8731_REG_ANALOG_PATH, WM8731_ANALOG_AUDIO_LINE);
 	/* Digital paths */
 	wm8731_write_register(WM8731_REG_DIGITAL_PATH, WM8731_DIGITAL_AUDIO);
 	/* Power down control */
@@ -38,7 +38,7 @@ void wm8731_init()
 void wm8731_write_register(uint8_t reg, uint16_t data)
 {
 	/* Prepare transmission */
-	uint8_t address = (reg << 1) | (Hi(data) & 1);;
+	uint8_t address = (reg << 1) | (Hi(data) & 1);
 	uint8_t buffer  = Lo(data);
 
 	/* Non-blocking delay to grant that I2C module is ready */
@@ -47,4 +47,11 @@ void wm8731_write_register(uint8_t reg, uint16_t data)
 	/* Transmit through I2C */
 	rtos_i2c_transfer(rtos_i2c_0, &buffer, 1, WM8731_DEVICE_ADDRESS, address, 1);
 }
+void wm8731_start()
+{
+	I2S0->TCSR |= I2S_TCSR_FR_MASK;
+	I2S0->TCSR |= I2S_TCSR_TE_MASK;
 
+	I2S0->RCSR |= I2S_RCSR_FR_MASK;
+	I2S0->RCSR |= I2S_RCSR_RE_MASK;
+}
